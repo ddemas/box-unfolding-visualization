@@ -4,6 +4,7 @@ var BG_BLUE = "#C0DDFA";
 var BG_PINK = "#FBD7FC";
 
 var BRIGHT_RED = "#FA0720";
+var BRIGHT_PINK = "#FF1CE5";
 
 var BLACK = "#000000";
 var GRAY = "#555555";

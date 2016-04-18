@@ -20,18 +20,22 @@ function draw() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
     perimeter = 0;
 
-    var scaledWidth = width * SCALE;
-    var scaledLength = length * SCALE;
-    var scaledHeight = height * SCALE;
+    drawBgRectangles(width, height, length);
 
-    // B(x, y+a+c)
-    // C(-b-c+y, (a+b)/2+x)
-    // D(-b-c-x, y)
-    // E(-(a+b)/2-c+y, -(a+b)/2-x)
-    // F(x, -a-c+y)
-    // G((a+b)/2+c-y, -(a+b)/2+x)
-    // H(a+c-x, -y)
-    // I((a+b)/2+c+y, (a+b)/2-x)
+    drawSymmetricPointsAndLines(0,0, BLACK);
+
+    document.getElementById("perimeter").innerHTML=perimeter;
+}
+
+function resizeWindow() {
+    canvas.width = $(window).width() - 250;
+    center_x = canvas.width / 2;
+}
+
+function drawBgRectangles(w, h, l) {
+    var scaledWidth = w * SCALE;
+    var scaledLength = l * SCALE;
+    var scaledHeight = h * SCALE;
 
     drawRectangle(center_x - scaledWidth/2,center_y - scaledHeight/2, scaledWidth, scaledHeight, BG_GREEN);
 
@@ -67,28 +71,9 @@ function draw() {
     drawRectangle(center_x - scaledWidth/2 - scaledLength, center_y + scaledHeight/2, scaledLength, scaledWidth, BG_RED);
     drawRectangle(center_x - scaledWidth/2, center_y + scaledHeight/2, scaledWidth, scaledLength, BG_RED);
     drawRectangle(center_x + scaledWidth/2, center_y + scaledHeight/2, scaledLength, scaledWidth, BG_RED);
-
-    drawSymmetricPointsAndLines(0,0, BLACK);
-
-    document.getElementById("perimeter").innerHTML=perimeter;
 }
 
-function resizeWindow() {
-    canvas.width = $(window).width() - 250;
-    center_x = canvas.width / 2;
-}
-
-function drawRectangle(x, y, width, height, color) {
-	ctx.beginPath();
-	ctx.rect(x, y, width, height);
-	ctx.fillStyle = color;
-    ctx.strokeStyle = GRAY;
-    ctx.stroke();
-	ctx.fill();
-	ctx.closePath();
-}
-
-function drawSymmetricPointsAndLines(x, y, lineColor) {
+function drawSymmetricPointsAndLines(relx, rely, lineColor) {
     // B(x, y+a+c)
     // C(-b-c+y, (a+b)/2+x)
     // D(-b-c-x, y)
@@ -101,7 +86,7 @@ function drawSymmetricPointsAndLines(x, y, lineColor) {
     var scaledWidth = width * SCALE;
     var scaledLength = length * SCALE;
 
-    // Apologies for the bad variable names
+    // Apologies for the bad variable names. These are the vertices of the box
     var leftVertexX = center_x - scaledWidth/2 - scaledLength;
     var midLeftVertexX = center_x - scaledWidth/2;
     var midRightVertexX = center_x + scaledWidth/2;
@@ -109,61 +94,60 @@ function drawSymmetricPointsAndLines(x, y, lineColor) {
     var topVertexY = center_y - scaledHeight/2;
     var bottomVertexY = center_y + scaledHeight/2;
 
+    var points = [{x:center_x + relx, y:center_y + rely + scaledHeight + scaledLength}, // F
+        {x:center_x-(scaledHeight+scaledWidth)/2-scaledLength-rely, y:center_y+(scaledHeight+scaledWidth)/2+relx}, // E
+        {x:center_x-scaledWidth-scaledLength-relx, y:center_y+rely}, //D
+        {x:center_x-(scaledHeight+scaledWidth)/2-scaledLength+rely, y:center_y-(scaledHeight+scaledWidth)/2-relx}, // C
+        {x:center_x+relx, y:center_y-scaledHeight-scaledLength+rely}, // B
+        {x:center_x+(scaledHeight+scaledWidth)/2+scaledLength-rely, y:center_y-(scaledHeight+scaledWidth)/2+relx}, // I
+        {x:center_x+scaledWidth+scaledLength-relx, y:center_y-rely}, // H
+        {x:center_x+(scaledHeight+scaledWidth)/2+scaledLength+rely, y:center_y+(scaledHeight+scaledWidth)/2-relx}]; // G
+
+    var voronoi = new Voronoi();
+    var bbox = {xl: 0, xr: canvas.width, yt: 0, yb: canvas.height}; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
+    var diagram = voronoi.compute(points, bbox);
+
+    for (var i = 0; i < diagram.edges.length; i++) {
+        var edge = diagram.edges[i];
+        drawVoronoiLines(edge.va.x, edge.va.y, edge.vb.x, edge.vb.y);
+    }
+
     // F
-    drawLine(center_x + x, center_y + y + scaledHeight + scaledLength,
-        midLeftVertexX, bottomVertexY, lineColor);
-    drawLine(center_x + x, center_y + y + scaledHeight + scaledLength,
-        midRightVertexX, bottomVertexY, lineColor);
-    drawPoint(center_x + x, center_y + y + scaledHeight + scaledLength);
+    drawStarPerimeter(points[0].x, points[0].y, midLeftVertexX, bottomVertexY);
+    drawStarPerimeter(points[0].x, points[0].y, midRightVertexX, bottomVertexY);
 
     // E
-    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength-y, center_y+(scaledHeight+scaledWidth)/2+x,
-        leftVertexX, bottomVertexY, lineColor);
-    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength-y, center_y+(scaledHeight+scaledWidth)/2+x,
-        midLeftVertexX, bottomVertexY, lineColor);
-    drawPoint(center_x-(scaledHeight+scaledWidth)/2-scaledLength-y, center_y+(scaledHeight+scaledWidth)/2+x);
+    drawStarPerimeter(points[1].x, points[1].y, leftVertexX, bottomVertexY);
+    drawStarPerimeter(points[1].x, points[1].y, midLeftVertexX, bottomVertexY);
 
     // D
-    drawLine(center_x-scaledWidth-scaledLength-x, center_y+y,
-        leftVertexX, topVertexY, lineColor);
-    drawLine(center_x-scaledWidth-scaledLength-x, center_y+y,
-        leftVertexX, bottomVertexY, lineColor);
-    drawPoint(center_x-scaledWidth-scaledLength-x, center_y+y);
+    drawStarPerimeter(points[2].x, points[2].y, leftVertexX, topVertexY);
+    drawStarPerimeter(points[2].x, points[2].y, leftVertexX, bottomVertexY);
 
     // C
-    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength+y, center_y-(scaledHeight+scaledWidth)/2-x,
-        leftVertexX, topVertexY, lineColor);
-    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength+y, center_y-(scaledHeight+scaledWidth)/2-x,
-        midLeftVertexX, topVertexY, lineColor);
-    drawPoint(center_x-(scaledHeight+scaledWidth)/2-scaledLength+y, center_y-(scaledHeight+scaledWidth)/2-x);
+    drawStarPerimeter(points[3].x, points[3].y, leftVertexX, topVertexY);
+    drawStarPerimeter(points[3].x, points[3].y, midLeftVertexX, topVertexY);
 
     // B
-    drawLine(center_x+x, center_y-scaledHeight-scaledLength+y,
-        midLeftVertexX, topVertexY, lineColor);
-    drawLine(center_x+x, center_y-scaledHeight-scaledLength+y,
-        midRightVertexX, topVertexY, lineColor);
-    drawPoint(center_x+x, center_y-scaledHeight-scaledLength+y);
+    drawStarPerimeter(points[4].x, points[4].y, midLeftVertexX, topVertexY);
+    drawStarPerimeter(points[4].x, points[4].y, midRightVertexX, topVertexY);
 
     // I
-    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength-y, center_y-(scaledHeight+scaledWidth)/2+x,
-        midRightVertexX, topVertexY, lineColor);
-    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength-y, center_y-(scaledHeight+scaledWidth)/2+x,
-        rightVertexX, topVertexY, lineColor);
-    drawPoint(center_x+(scaledHeight+scaledWidth)/2+scaledLength-y, center_y-(scaledHeight+scaledWidth)/2+x);
+    drawStarPerimeter(points[5].x, points[5].y, midRightVertexX, topVertexY);
+    drawStarPerimeter(points[5].x, points[5].y, rightVertexX, topVertexY);
 
     // H
-    drawLine(center_x+scaledWidth+scaledLength-x, center_y-y,
-        rightVertexX, topVertexY, lineColor);
-    drawLine(center_x+scaledWidth+scaledLength-x, center_y-y,
-        rightVertexX, bottomVertexY, lineColor);
-    drawPoint(center_x+scaledWidth+scaledLength-x, center_y-y);
+    drawStarPerimeter(points[6].x, points[6].y, rightVertexX, topVertexY);
+    drawStarPerimeter(points[6].x, points[6].y, rightVertexX, bottomVertexY);
 
     // G
-    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength+y, center_y+(scaledHeight+scaledWidth)/2-x,
-        midRightVertexX, bottomVertexY, lineColor);
-    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength+y, center_y+(scaledHeight+scaledWidth)/2-x,
-        rightVertexX, bottomVertexY, lineColor);
-    drawPoint(center_x+(scaledHeight+scaledWidth)/2+scaledLength+y, center_y+(scaledHeight+scaledWidth)/2-x);
+    drawStarPerimeter(points[7].x, points[7].y, midRightVertexX, bottomVertexY);
+    drawStarPerimeter(points[7].x, points[7].y, rightVertexX, bottomVertexY);
+
+
+    for (var j = 0; j < 8; j++) {
+        drawPoint(points[j].x, points[j].y);
+    }
 }
 
 function drawPoint(x, y) {
@@ -174,15 +158,36 @@ function drawPoint(x, y) {
     ctx.closePath();
 }
 
-function drawLine(x1, y1, x2, y2, color) {
+function drawStarPerimeter(x1, y1, x2, y2) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = BLACK;
+    ctx.lineWidth = 1;
     ctx.stroke();
 
     var distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1,2));
     perimeter += distance / SCALE;
+}
+
+function drawVoronoiLines(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = BRIGHT_PINK;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
+
+function drawRectangle(x, y, width, height, color) {
+    ctx.beginPath();
+    ctx.rect(x, y, width, height);
+    ctx.fillStyle = color;
+    ctx.strokeStyle = GRAY;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
 }
 
 function clickMouse(e) {
@@ -205,6 +210,7 @@ $(function() {
         min: 1,
         max: 10,
         animate: true,
+        step: 0.1,
         slide: function (event, ui) {
             $("#heightAmount" ).val(ui.value);
             height = ui.value;
@@ -220,6 +226,7 @@ $(function() {
         range: "min",
         min: 1,
         max: 10,
+        step: 0.1,
         animate: true,
         slide: function (event, ui) {
             $("#widthAmount" ).val(ui.value);
@@ -236,6 +243,7 @@ $(function() {
         range: "min",
         min: 1,
         max: 10,
+        step: 0.1,
         animate: true,
         slide: function (event, ui) {
             $("#lengthAmount" ).val(ui.value);
