@@ -12,10 +12,13 @@ var length = 5;
 var center_x = canvas.width / 2;
 var center_y = canvas.height / 2;
 
+var perimeter = 0;
+
 setInterval(draw, 10);
 
 function draw() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
+    perimeter = 0;
 
     var scaledWidth = width * SCALE;
     var scaledLength = length * SCALE;
@@ -65,7 +68,9 @@ function draw() {
     drawRectangle(center_x - scaledWidth/2, center_y + scaledHeight/2, scaledWidth, scaledLength, BG_RED);
     drawRectangle(center_x + scaledWidth/2, center_y + scaledHeight/2, scaledLength, scaledWidth, BG_RED);
 
-    drawSymmetricPoints(-30,10);
+    drawSymmetricPointsAndLines(0,0, BLACK);
+
+    document.getElementById("perimeter").innerHTML=perimeter;
 }
 
 function resizeWindow() {
@@ -77,13 +82,13 @@ function drawRectangle(x, y, width, height, color) {
 	ctx.beginPath();
 	ctx.rect(x, y, width, height);
 	ctx.fillStyle = color;
-    ctx.strokeStyle = BLACK;
+    ctx.strokeStyle = GRAY;
     ctx.stroke();
 	ctx.fill();
 	ctx.closePath();
 }
 
-function drawSymmetricPoints(x, y) {
+function drawSymmetricPointsAndLines(x, y, lineColor) {
     // B(x, y+a+c)
     // C(-b-c+y, (a+b)/2+x)
     // D(-b-c-x, y)
@@ -92,26 +97,92 @@ function drawSymmetricPoints(x, y) {
     // G((a+b)/2+c-y, -(a+b)/2+x)
     // H(b+c-x, -y)
     // I((a+b)/2+c+y, (a+b)/2-x)
-    var a = height * SCALE;
-    var b = width * SCALE;
-    var c = length * SCALE;
+    var scaledHeight = height * SCALE;
+    var scaledWidth = width * SCALE;
+    var scaledLength = length * SCALE;
 
-    drawPoint(center_x + x, center_y + y + a + c);
-    drawPoint(center_x-b-c+y, center_y+(a+b)/2+x);
-    drawPoint(center_x-b-c-x, center_y+y);
-    drawPoint(center_x-(a+b)/2-c+y, center_y-(a+b)/2-x);
-    drawPoint(center_x+x, center_y-a-c+y);
-    drawPoint(center_x+(a+b)/2+c-y, center_y-(a+b)/2+x);
-    drawPoint(center_x+b+c-x, center_y-y);
-    drawPoint(center_x+(a+b)/2+c+y, center_y+(a+b)/2-x);
+    // Apologies for the bad variable names
+    var leftVertexX = center_x - scaledWidth/2 - scaledLength;
+    var midLeftVertexX = center_x - scaledWidth/2;
+    var midRightVertexX = center_x + scaledWidth/2;
+    var rightVertexX = center_x + scaledWidth/2 + scaledLength;
+    var topVertexY = center_y - scaledHeight/2;
+    var bottomVertexY = center_y + scaledHeight/2;
+
+    // F
+    drawLine(center_x + x, center_y + y + scaledHeight + scaledLength,
+        midLeftVertexX, bottomVertexY, lineColor);
+    drawLine(center_x + x, center_y + y + scaledHeight + scaledLength,
+        midRightVertexX, bottomVertexY, lineColor);
+    drawPoint(center_x + x, center_y + y + scaledHeight + scaledLength);
+
+    // E
+    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength-y, center_y+(scaledHeight+scaledWidth)/2+x,
+        leftVertexX, bottomVertexY, lineColor);
+    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength-y, center_y+(scaledHeight+scaledWidth)/2+x,
+        midLeftVertexX, bottomVertexY, lineColor);
+    drawPoint(center_x-(scaledHeight+scaledWidth)/2-scaledLength-y, center_y+(scaledHeight+scaledWidth)/2+x);
+
+    // D
+    drawLine(center_x-scaledWidth-scaledLength-x, center_y+y,
+        leftVertexX, topVertexY, lineColor);
+    drawLine(center_x-scaledWidth-scaledLength-x, center_y+y,
+        leftVertexX, bottomVertexY, lineColor);
+    drawPoint(center_x-scaledWidth-scaledLength-x, center_y+y);
+
+    // C
+    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength+y, center_y-(scaledHeight+scaledWidth)/2-x,
+        leftVertexX, topVertexY, lineColor);
+    drawLine(center_x-(scaledHeight+scaledWidth)/2-scaledLength+y, center_y-(scaledHeight+scaledWidth)/2-x,
+        midLeftVertexX, topVertexY, lineColor);
+    drawPoint(center_x-(scaledHeight+scaledWidth)/2-scaledLength+y, center_y-(scaledHeight+scaledWidth)/2-x);
+
+    // B
+    drawLine(center_x+x, center_y-scaledHeight-scaledLength+y,
+        midLeftVertexX, topVertexY, lineColor);
+    drawLine(center_x+x, center_y-scaledHeight-scaledLength+y,
+        midRightVertexX, topVertexY, lineColor);
+    drawPoint(center_x+x, center_y-scaledHeight-scaledLength+y);
+
+    // I
+    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength-y, center_y-(scaledHeight+scaledWidth)/2+x,
+        midRightVertexX, topVertexY, lineColor);
+    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength-y, center_y-(scaledHeight+scaledWidth)/2+x,
+        rightVertexX, topVertexY, lineColor);
+    drawPoint(center_x+(scaledHeight+scaledWidth)/2+scaledLength-y, center_y-(scaledHeight+scaledWidth)/2+x);
+
+    // H
+    drawLine(center_x+scaledWidth+scaledLength-x, center_y-y,
+        rightVertexX, topVertexY, lineColor);
+    drawLine(center_x+scaledWidth+scaledLength-x, center_y-y,
+        rightVertexX, bottomVertexY, lineColor);
+    drawPoint(center_x+scaledWidth+scaledLength-x, center_y-y);
+
+    // G
+    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength+y, center_y+(scaledHeight+scaledWidth)/2-x,
+        midRightVertexX, bottomVertexY, lineColor);
+    drawLine(center_x+(scaledHeight+scaledWidth)/2+scaledLength+y, center_y+(scaledHeight+scaledWidth)/2-x,
+        rightVertexX, bottomVertexY, lineColor);
+    drawPoint(center_x+(scaledHeight+scaledWidth)/2+scaledLength+y, center_y+(scaledHeight+scaledWidth)/2-x);
 }
 
 function drawPoint(x, y) {
     ctx.beginPath();
     ctx.arc(x,y,POINT_RADIUS,0,360);
     ctx.fillStyle = BRIGHT_RED;
-    ctx.fill()
+    ctx.fill();
     ctx.closePath();
+}
+
+function drawLine(x1, y1, x2, y2, color) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+
+    var distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1,2));
+    perimeter += distance / SCALE;
 }
 
 function clickMouse(e) {
@@ -134,7 +205,6 @@ $(function() {
         min: 1,
         max: 10,
         animate: true,
-        step: 1,
         slide: function (event, ui) {
             $("#heightAmount" ).val(ui.value);
             height = ui.value;
@@ -151,7 +221,6 @@ $(function() {
         min: 1,
         max: 10,
         animate: true,
-        step: 1,
         slide: function (event, ui) {
             $("#widthAmount" ).val(ui.value);
             width = ui.value;
@@ -168,7 +237,6 @@ $(function() {
         min: 1,
         max: 10,
         animate: true,
-        step: 1,
         slide: function (event, ui) {
             $("#lengthAmount" ).val(ui.value);
             length = ui.value;

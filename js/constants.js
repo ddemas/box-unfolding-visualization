@@ -6,8 +6,9 @@ var BG_PINK = "#FBD7FC";
 var BRIGHT_RED = "#FA0720";
 
 var BLACK = "#000000";
+var GRAY = "#555555";
 
 var SCALE = 15;
 
-var POINT_RADIUS = 2;
+var POINT_RADIUS = 4;
     
