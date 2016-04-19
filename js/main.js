@@ -104,13 +104,23 @@ function drawSymmetricPointsAndLines(relx, rely, lineColor) {
         {x:center_x+(scaledHeight+scaledWidth)/2+scaledLength+rely, y:center_y+(scaledHeight+scaledWidth)/2-relx}]; // G
 
     var voronoi = new Voronoi();
-    var bbox = {xl: 0, xr: canvas.width, yt: 0, yb: canvas.height}; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
+    var bbox = {xl: -10, xr: canvas.width + 10, yt: -10, yb: canvas.height + 10};
     var diagram = voronoi.compute(points, bbox);
 
     for (var i = 0; i < diagram.edges.length; i++) {
         var edge = diagram.edges[i];
         drawVoronoiLines(edge.va.x, edge.va.y, edge.vb.x, edge.vb.y);
     }
+
+    fadeOutside(points,
+        [{x: midLeftVertexX, y: bottomVertexY},
+        {x: leftVertexX, y: bottomVertexY},
+        {x: leftVertexX, y: topVertexY},
+        {x: midLeftVertexX, y: topVertexY},
+        {x: midRightVertexX, y: topVertexY},
+        {x: rightVertexX, y: topVertexY},
+        {x: rightVertexX, y: bottomVertexY},
+        {x: midRightVertexX, y: bottomVertexY}]);
 
     // F
     drawStarPerimeter(points[0].x, points[0].y, midLeftVertexX, bottomVertexY);
@@ -165,6 +175,7 @@ function drawStarPerimeter(x1, y1, x2, y2) {
     ctx.strokeStyle = BLACK;
     ctx.lineWidth = 1;
     ctx.stroke();
+    ctx.closePath();
 
     var distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1,2));
     perimeter += distance / SCALE;
@@ -177,6 +188,7 @@ function drawVoronoiLines(x1, y1, x2, y2) {
     ctx.strokeStyle = BRIGHT_PINK;
     ctx.lineWidth = 2;
     ctx.stroke();
+    ctx.closePath();
 }
 
 function drawRectangle(x, y, width, height, color) {
@@ -188,6 +200,25 @@ function drawRectangle(x, y, width, height, color) {
     ctx.stroke();
     ctx.fill();
     ctx.closePath();
+}
+
+function fadeOutside(convexVertices, concaveVertices) {
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(canvas.width, 0);
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.lineTo(0, canvas.height);
+    ctx.closePath();
+
+    ctx.moveTo(convexVertices[0].x, convexVertices[0].y);
+    for(var i = convexVertices.length-1; i >= 0; i--) {
+        ctx.lineTo(concaveVertices[i].x, concaveVertices[i].y);
+        ctx.lineTo(convexVertices[i].x, convexVertices[i].y);
+    }
+    ctx.closePath();
+
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.fill();
 }
 
 function clickMouse(e) {

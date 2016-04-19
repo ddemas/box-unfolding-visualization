@@ -7,6 +7,7 @@ var BRIGHT_RED = "#FA0720";
 var BRIGHT_PINK = "#FF1CE5";
 
 var BLACK = "#000000";
+var WHITE = "#FFFFFF";
 var GRAY = "#555555";
 
 var SCALE = 15;
