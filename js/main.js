@@ -4,6 +4,7 @@ var ctx = canvas.getContext("2d");
 
 canvas.onmousedown = clickMouse;
 canvas.onmouseup = releaseMouse;
+canvas.onmousemove = dragMouse;
 
 var height = 5;
 var width = 5;
@@ -14,6 +15,15 @@ var center_y = canvas.height / 2;
 
 var perimeter = 0;
 
+var sourceX = 0;
+var sourceY = 0;
+
+var points = starPoints(sourceX, sourceY);
+var centerPoints = starPoints(0,0);
+
+var mouseIsDown = false;
+var selectedPointInd = 0;
+
 setInterval(draw, 10);
 
 function draw() {
@@ -22,7 +32,17 @@ function draw() {
 
     drawBgRectangles(width, height, length);
 
-    drawSymmetricPointsAndLines(0,0, BLACK);
+    var minimumx = - (width*SCALE)/2;
+    var maximumx = width*SCALE/2;
+    var minimumy = - height*SCALE/2;
+    var maximumy = height*SCALE/2;
+    sourceX = Math.max(Math.min(sourceX, maximumx), minimumx);
+    sourceY = Math.max(Math.min(sourceY, maximumy), minimumy);
+
+    points = starPoints(sourceX, sourceY);
+    centerPoints = starPoints(0,0);
+
+    drawSymmetricPointsAndLines(sourceX,sourceY);
 
     document.getElementById("perimeter").innerHTML=perimeter;
 }
@@ -73,7 +93,7 @@ function drawBgRectangles(w, h, l) {
     drawRectangle(center_x + scaledWidth/2, center_y + scaledHeight/2, scaledLength, scaledWidth, BG_RED);
 }
 
-function drawSymmetricPointsAndLines(relx, rely, lineColor) {
+function drawSymmetricPointsAndLines(relx, rely) {
     // B(x, y+a+c)
     // C(-b-c+y, (a+b)/2+x)
     // D(-b-c-x, y)
@@ -93,15 +113,6 @@ function drawSymmetricPointsAndLines(relx, rely, lineColor) {
     var rightVertexX = center_x + scaledWidth/2 + scaledLength;
     var topVertexY = center_y - scaledHeight/2;
     var bottomVertexY = center_y + scaledHeight/2;
-
-    var points = [{x:center_x + relx, y:center_y + rely + scaledHeight + scaledLength}, // F
-        {x:center_x-(scaledHeight+scaledWidth)/2-scaledLength-rely, y:center_y+(scaledHeight+scaledWidth)/2+relx}, // E
-        {x:center_x-scaledWidth-scaledLength-relx, y:center_y+rely}, //D
-        {x:center_x-(scaledHeight+scaledWidth)/2-scaledLength+rely, y:center_y-(scaledHeight+scaledWidth)/2-relx}, // C
-        {x:center_x+relx, y:center_y-scaledHeight-scaledLength+rely}, // B
-        {x:center_x+(scaledHeight+scaledWidth)/2+scaledLength-rely, y:center_y-(scaledHeight+scaledWidth)/2+relx}, // I
-        {x:center_x+scaledWidth+scaledLength-relx, y:center_y-rely}, // H
-        {x:center_x+(scaledHeight+scaledWidth)/2+scaledLength+rely, y:center_y+(scaledHeight+scaledWidth)/2-relx}]; // G
 
     var voronoi = new Voronoi();
     var bbox = {xl: -10, xr: canvas.width + 10, yt: -10, yb: canvas.height + 10};
@@ -158,6 +169,21 @@ function drawSymmetricPointsAndLines(relx, rely, lineColor) {
     for (var j = 0; j < 8; j++) {
         drawPoint(points[j].x, points[j].y);
     }
+}
+
+function starPoints(relx, rely) {
+    var scaledHeight = height * SCALE;
+    var scaledWidth = width * SCALE;
+    var scaledLength = length * SCALE;
+
+    return [{x:center_x + relx, y:center_y + rely + scaledHeight + scaledLength}, // F
+        {x:center_x-(scaledHeight+scaledWidth)/2-scaledLength-rely, y:center_y+(scaledHeight+scaledWidth)/2+relx}, // E
+        {x:center_x-scaledWidth-scaledLength-relx, y:center_y-rely}, //D
+        {x:center_x-(scaledHeight+scaledWidth)/2-scaledLength+rely, y:center_y-(scaledHeight+scaledWidth)/2-relx}, // C
+        {x:center_x+relx, y:center_y-scaledHeight-scaledLength+rely}, // B
+        {x:center_x+(scaledHeight+scaledWidth)/2+scaledLength-rely, y:center_y-(scaledHeight+scaledWidth)/2+relx}, // I
+        {x:center_x+scaledWidth+scaledLength-relx, y:center_y-rely}, // H
+        {x:center_x+(scaledHeight+scaledWidth)/2+scaledLength+rely, y:center_y+(scaledHeight+scaledWidth)/2-relx}]; // G
 }
 
 function drawPoint(x, y) {
@@ -222,11 +248,61 @@ function fadeOutside(convexVertices, concaveVertices) {
 }
 
 function clickMouse(e) {
+    var mousePos = getMousePos(canvas, e);
+    console.log("x: " + mousePos.x + ", y: " + mousePos.y);
+    for (var i = 0; i < points.length; i++){
+        if ((mousePos.x >= points[i].x - POINT_RADIUS && mousePos.x <= points[i].x + POINT_RADIUS) &&
+            (mousePos.y >= points[i].y - POINT_RADIUS && mousePos.y <= points[i].y + POINT_RADIUS)) {
+            mouseIsDown = true;
+            selectedPointInd = i;
+        }
+    }
+}
 
+function dragMouse(e) {
+    var mousePos = getMousePos(canvas, e);
+    if (mouseIsDown) {
+        // X and Y for Top and bottom points are obvious
+        var xsign = 1;
+        var ysign = 1;
+        var switchXy = false;
+        if (selectedPointInd == 3) {
+            xsign = -1;
+            switchXy = true;
+        } else if (selectedPointInd == 5) {
+            ysign = -1;
+            switchXy = true;
+        } else if (selectedPointInd == 6 || selectedPointInd == 2) {
+            xsign = -1;
+            ysign = -1;
+        } else if (selectedPointInd == 1) {
+            ysign = -1;
+            switchXy = true;
+        } else if (selectedPointInd == 7) {
+            xsign = -1;
+            switchXy = true;
+        }
+
+        if (switchXy) {
+            sourceY = ysign * (mousePos.x - centerPoints[selectedPointInd].x);
+            sourceX = xsign * (mousePos.y - centerPoints[selectedPointInd].y);
+        } else {
+            sourceX = xsign * (mousePos.x - centerPoints[selectedPointInd].x);
+            sourceY = ysign * (mousePos.y - centerPoints[selectedPointInd].y);
+        }
+    }
 }
 
 function releaseMouse(e) {
+    mouseIsDown = false;
+}
 
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
 }
 
 //////////////////////////////////////////////////////////////
