@@ -22,6 +22,15 @@
             input[readonly] {
                 background-color: transparent;
                 border: none;
+                color: orangered;
+            }
+            footer {
+                text-align: center;
+                font-family: Helvetica;
+                color: #777777;
+            }
+            span {
+                color: orangered;
             }
         </style>
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
@@ -35,24 +44,35 @@
     <div class="jumbotron">
       <div class="container">
         <h1>Box Star Unfolding</h1>
-        <p>Coming soon</p>
+          <h2>Dani Demas and Yu Xuan Hong</h2>
+        <p>This visualization shows the star unfolding for a rectangular prism. When this is folded into a box, the red
+            points will meet at the the source point of the unfolding. The purple lines are the edges of the Voronoi
+            diagram of the red points. These edges should also be the cut locus of the source point.
+            <br><br>Click and drag any red point to change
+        the location of the source point (which is restricted to one of the width-by-height faces)</p>
 
         <div class="row">
           <div class="col-md-4">
-                Width: <input type="text" id="widthAmount" readonly>
-                <br><div id="width" style="width:260px; margin:15px;"></div>
+                <p class="text-center">Width: <input type="text" id="widthAmount" value="5" readonly></p>
+                <div id="width"  style="margin:15px;"></div>
           </div>
           <div class="col-md-4">
-              Height: <input type="text" id="heightAmount" readonly>
-              <br><div id="height" style="width:260px; margin:15px;"></div>
+              <p class="text-center">Height: <input type="text" id="heightAmount" value="5" readonly></p>
+              <div id="height"  style="margin:15px;"></div>
          </div>
           <div class="col-md-4">
-              Length: <input type="text" id="lengthAmount" readonly>
-              <br><div id="length" style="width:260px; margin:15px;"></div>
+              <p class="text-center">Length: <input type="text" id="lengthAmount" value="5" readonly></p>
+              <div id="length"  style="margin:15px;"></div>
           </div>
         </div>
-
-          <p>Perimeter of star unfolding: <span id="perimeter"></span></p>
+      <div class="row">
+          <div class="col-md-6">
+              <p>Perimeter of star unfolding: <span id="perimeter"></span></p>
+          </div>
+          <div class="col-md-6">
+              <p>Fade region outside of unfolding <div id="fade" style="width:100px; margin:15px;"></div> </p>
+          </div>
+      </div>
 
       </div>
     </div>
@@ -60,7 +80,10 @@
     <div class="container">
       <canvas id="mainCanvas" height="700" style="border:1px solid #000000;"></canvas>
 
-    </div> <!-- /container -->        
+    </div> <!-- /container -->
+
+    <footer>This was created for MATH189O: Discrete and Computational Geometry, taught by Prof. Satyan Devadoss
+        at Harvey Mudd College in Spring 2016.</footer>
 
         <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script> -->
         <!-- <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.js"><\/script>')</script> -->

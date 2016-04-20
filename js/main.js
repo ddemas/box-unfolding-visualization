@@ -24,6 +24,8 @@ var centerPoints = starPoints(0,0);
 var mouseIsDown = false;
 var selectedPointInd = 0;
 
+var fade = 0.85;
+
 setInterval(draw, 10);
 
 function draw() {
@@ -131,7 +133,8 @@ function drawSymmetricPointsAndLines(relx, rely) {
         {x: midRightVertexX, y: topVertexY},
         {x: rightVertexX, y: topVertexY},
         {x: rightVertexX, y: bottomVertexY},
-        {x: midRightVertexX, y: bottomVertexY}]);
+        {x: midRightVertexX, y: bottomVertexY}],
+        fade);
 
     // F
     drawStarPerimeter(points[0].x, points[0].y, midLeftVertexX, bottomVertexY);
@@ -228,7 +231,7 @@ function drawRectangle(x, y, width, height, color) {
     ctx.closePath();
 }
 
-function fadeOutside(convexVertices, concaveVertices) {
+function fadeOutside(convexVertices, concaveVertices, opacity) {
     ctx.beginPath();
     ctx.moveTo(0,0);
     ctx.lineTo(canvas.width, 0);
@@ -243,7 +246,7 @@ function fadeOutside(convexVertices, concaveVertices) {
     }
     ctx.closePath();
 
-    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.fillStyle = "rgba(255,255,255," + opacity + ")";
     ctx.fill();
 }
 
@@ -323,7 +326,6 @@ $(function() {
             height = ui.value;
         }
     });
-    $( "#heightAmount" ).val( $( "#height" ).slider( "value" ) );
 });
 
 $(function() {
@@ -340,7 +342,6 @@ $(function() {
             width = ui.value;
         }
     });
-    $( "#widthAmount" ).val( $( "#width" ).slider( "value" ) );
 });
 
 $(function() {
@@ -357,5 +358,20 @@ $(function() {
             length = ui.value;
         }
     });
-    $( "#lengthAmount" ).val( $( "#length" ).slider( "value" ) );
+});
+
+$(function() {
+    $("#fade" ).slider({
+        value: 0.85,
+        orientation: "horizontal",
+        range: "min",
+        min: 0,
+        max: 1,
+        step: 0.05,
+        animate: true,
+        slide: function (event, ui) {
+            $("#fadeAmount" ).val(ui.value);
+            fade = ui.value;
+        }
+    });
 });
