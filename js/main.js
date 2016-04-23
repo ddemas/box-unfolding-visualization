@@ -6,9 +6,9 @@ canvas.onmousedown = clickMouse;
 canvas.onmouseup = releaseMouse;
 canvas.onmousemove = dragMouse;
 
-var height = 5;
-var width = 5;
-var length = 5;
+var height = 0.5;
+var width = 0.5;
+var length = 0.5;
 
 var center_x = canvas.width / 2;
 var center_y = canvas.height / 2;
@@ -26,13 +26,25 @@ var selectedPointInd = 0;
 
 var fade = 0.85;
 
+var SCALE = 15;
+
+var voronoiDisp = true;
+var rectColorsDisp = true;
+var starEdgesDisp = true;
+
+
+resizeCanvas();
 setInterval(draw, 10);
 
 function draw() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
     perimeter = 0;
 
-    drawBgRectangles(width, height, length);
+    rescale();
+
+    if (rectColorsDisp) {
+        drawBgRectangles(width, height, length);
+    }
 
     var minimumx = - (width*SCALE)/2;
     var maximumx = width*SCALE/2;
@@ -46,12 +58,47 @@ function draw() {
 
     drawSymmetricPointsAndLines(sourceX,sourceY);
 
-    document.getElementById("perimeter").innerHTML=perimeter;
+    //document.getElementById("perimeter").innerHTML=perimeter;
 }
 
-function resizeWindow() {
-    canvas.width = $(window).width() - 250;
+function resizeCanvas() {
+    canvas.width = $(window).width() - 500;
     center_x = canvas.width / 2;
+    canvas.height = $(window).height() - 50;
+    center_y = canvas.height / 2;
+}
+
+function rescale() {
+    var totalWidth = width*3 + length*2;
+    var totalHeight = Math.max(height*3 + length*2, width*2 + height);
+    var newScale = SCALE;
+
+    var canvasHeightToWidthRatio = canvas.height / canvas.width;
+
+    if(totalHeight > totalWidth * canvasHeightToWidthRatio) {
+        newScale = canvas.height * 0.9 / totalHeight;
+        console.log("height > width");
+    } else if (totalWidth * canvasHeightToWidthRatio >= totalHeight) {
+        newScale = canvas.width * 0.9 / totalWidth;
+        console.log("width >= height");
+    }
+    console.log("totalHeight: " + totalHeight);
+    console.log("totalWidth: " + totalWidth);
+    console.log("newScale: " + newScale);
+    console.log("oldScale: " + SCALE);
+
+    // if (totalWidth * newScale > 0.9*canvas.width) {
+    //     SCALE = canvas.width * 0.9 / totalWidth;
+    //     console.log("Oops! Too wide");
+    // } else if (totalHeight * newScale >= 0.9*canvas.height) {
+    //     SCALE = canvas.height * 0.9 / totalHeight;
+    //     console.log("Oops! Too tall");
+    // } else {
+    //     SCALE = newScale;
+    // }
+    SCALE = newScale;
+    console.log("\n");
+
 }
 
 function drawBgRectangles(w, h, l) {
@@ -117,57 +164,60 @@ function drawSymmetricPointsAndLines(relx, rely) {
     var bottomVertexY = center_y + scaledHeight/2;
 
     var voronoi = new Voronoi();
-    var bbox = {xl: -10, xr: canvas.width + 10, yt: -10, yb: canvas.height + 10};
+    var bbox = {xl: -50, xr: canvas.width + 50, yt: -50, yb: canvas.height + 50};
     var diagram = voronoi.compute(points, bbox);
 
-    for (var i = 0; i < diagram.edges.length; i++) {
-        var edge = diagram.edges[i];
-        drawVoronoiLines(edge.va.x, edge.va.y, edge.vb.x, edge.vb.y);
+    if (voronoiDisp) {
+        for (var i = 0; i < diagram.edges.length; i++) {
+            var edge = diagram.edges[i];
+            drawVoronoiLines(edge.va.x, edge.va.y, edge.vb.x, edge.vb.y);
+        }
     }
 
-    fadeOutside(points,
-        [{x: midLeftVertexX, y: bottomVertexY},
-        {x: leftVertexX, y: bottomVertexY},
-        {x: leftVertexX, y: topVertexY},
-        {x: midLeftVertexX, y: topVertexY},
-        {x: midRightVertexX, y: topVertexY},
-        {x: rightVertexX, y: topVertexY},
-        {x: rightVertexX, y: bottomVertexY},
-        {x: midRightVertexX, y: bottomVertexY}],
-        fade);
+    if (starEdgesDisp) {
+        fadeOutside(points,
+            [{x: midLeftVertexX, y: bottomVertexY},
+                {x: leftVertexX, y: bottomVertexY},
+                {x: leftVertexX, y: topVertexY},
+                {x: midLeftVertexX, y: topVertexY},
+                {x: midRightVertexX, y: topVertexY},
+                {x: rightVertexX, y: topVertexY},
+                {x: rightVertexX, y: bottomVertexY},
+                {x: midRightVertexX, y: bottomVertexY}],
+            fade);
 
-    // F
-    drawStarPerimeter(points[0].x, points[0].y, midLeftVertexX, bottomVertexY);
-    drawStarPerimeter(points[0].x, points[0].y, midRightVertexX, bottomVertexY);
+        // F
+        drawStarPerimeter(points[0].x, points[0].y, midLeftVertexX, bottomVertexY);
+        drawStarPerimeter(points[0].x, points[0].y, midRightVertexX, bottomVertexY);
 
-    // E
-    drawStarPerimeter(points[1].x, points[1].y, leftVertexX, bottomVertexY);
-    drawStarPerimeter(points[1].x, points[1].y, midLeftVertexX, bottomVertexY);
+        // E
+        drawStarPerimeter(points[1].x, points[1].y, leftVertexX, bottomVertexY);
+        drawStarPerimeter(points[1].x, points[1].y, midLeftVertexX, bottomVertexY);
 
-    // D
-    drawStarPerimeter(points[2].x, points[2].y, leftVertexX, topVertexY);
-    drawStarPerimeter(points[2].x, points[2].y, leftVertexX, bottomVertexY);
+        // D
+        drawStarPerimeter(points[2].x, points[2].y, leftVertexX, topVertexY);
+        drawStarPerimeter(points[2].x, points[2].y, leftVertexX, bottomVertexY);
 
-    // C
-    drawStarPerimeter(points[3].x, points[3].y, leftVertexX, topVertexY);
-    drawStarPerimeter(points[3].x, points[3].y, midLeftVertexX, topVertexY);
+        // C
+        drawStarPerimeter(points[3].x, points[3].y, leftVertexX, topVertexY);
+        drawStarPerimeter(points[3].x, points[3].y, midLeftVertexX, topVertexY);
 
-    // B
-    drawStarPerimeter(points[4].x, points[4].y, midLeftVertexX, topVertexY);
-    drawStarPerimeter(points[4].x, points[4].y, midRightVertexX, topVertexY);
+        // B
+        drawStarPerimeter(points[4].x, points[4].y, midLeftVertexX, topVertexY);
+        drawStarPerimeter(points[4].x, points[4].y, midRightVertexX, topVertexY);
 
-    // I
-    drawStarPerimeter(points[5].x, points[5].y, midRightVertexX, topVertexY);
-    drawStarPerimeter(points[5].x, points[5].y, rightVertexX, topVertexY);
+        // I
+        drawStarPerimeter(points[5].x, points[5].y, midRightVertexX, topVertexY);
+        drawStarPerimeter(points[5].x, points[5].y, rightVertexX, topVertexY);
 
-    // H
-    drawStarPerimeter(points[6].x, points[6].y, rightVertexX, topVertexY);
-    drawStarPerimeter(points[6].x, points[6].y, rightVertexX, bottomVertexY);
+        // H
+        drawStarPerimeter(points[6].x, points[6].y, rightVertexX, topVertexY);
+        drawStarPerimeter(points[6].x, points[6].y, rightVertexX, bottomVertexY);
 
-    // G
-    drawStarPerimeter(points[7].x, points[7].y, midRightVertexX, bottomVertexY);
-    drawStarPerimeter(points[7].x, points[7].y, rightVertexX, bottomVertexY);
-
+        // G
+        drawStarPerimeter(points[7].x, points[7].y, midRightVertexX, bottomVertexY);
+        drawStarPerimeter(points[7].x, points[7].y, rightVertexX, bottomVertexY);
+    }
 
     for (var j = 0; j < 8; j++) {
         drawPoint(points[j].x, points[j].y);
@@ -192,8 +242,11 @@ function starPoints(relx, rely) {
 function drawPoint(x, y) {
     ctx.beginPath();
     ctx.arc(x,y,POINT_RADIUS,0,360);
-    ctx.fillStyle = BRIGHT_RED;
+    ctx.fillStyle = WHITE;
+    ctx.strokeStyle = BLACK;
+    ctx.lineWidth = 3;
     ctx.fill();
+    ctx.stroke();
     ctx.closePath();
 }
 
@@ -202,7 +255,7 @@ function drawStarPerimeter(x1, y1, x2, y2) {
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.strokeStyle = BLACK;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 3;
     ctx.stroke();
     ctx.closePath();
 
@@ -314,13 +367,13 @@ function getMousePos(canvas, evt) {
 
 $(function() {
     $("#height" ).slider({
-        value: 5,
+        value: 0.5,
         orientation: "horizontal",
         range: "min",
-        min: 1,
-        max: 10,
+        min: 0.01,
+        max: 1,
         animate: true,
-        step: 0.1,
+        step: 0.01,
         slide: function (event, ui) {
             $("#heightAmount" ).val(ui.value);
             height = ui.value;
@@ -330,12 +383,12 @@ $(function() {
 
 $(function() {
     $("#width" ).slider({
-        value: 5,
+        value: 0.5,
         orientation: "horizontal",
         range: "min",
-        min: 1,
-        max: 10,
-        step: 0.1,
+        min: 0.01,
+        max: 1,
+        step: 0.01,
         animate: true,
         slide: function (event, ui) {
             $("#widthAmount" ).val(ui.value);
@@ -346,12 +399,12 @@ $(function() {
 
 $(function() {
     $("#length" ).slider({
-        value: 5,
+        value: 0.5,
         orientation: "horizontal",
         range: "min",
-        min: 1,
-        max: 10,
-        step: 0.1,
+        min: 0.01,
+        max: 1,
+        step: 0.01,
         animate: true,
         slide: function (event, ui) {
             $("#lengthAmount" ).val(ui.value);

@@ -10,7 +10,6 @@ var BLACK = "#000000";
 var WHITE = "#FFFFFF";
 var GRAY = "#555555";
 
-var SCALE = 15;
+var POINT_RADIUS = 6;
 
-var POINT_RADIUS = 4;
     

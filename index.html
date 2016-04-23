@@ -39,51 +39,95 @@
         <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <!-- <script src="//code.jquery.com/jquery-1.10.2.js"></script> -->
     </head>
-    <body onresize="resizeWindow()">
+    <body onresize="resizeCanvas()">
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
+    <!--<div class="jumbotron">-->
       <div class="container">
-        <h1>Box Star Unfolding</h1>
-          <h2>Dani Demas and Yu Xuan Hong</h2>
-        <p>This visualization shows the star unfolding for a rectangular prism. When this is folded into a box, the red
-            points will meet at the the source point of the unfolding. The purple lines are the edges of the Voronoi
-            diagram of the red points. These edges should also be the cut locus of the source point.
-            <br><br>Click and drag any red point to change
-        the location of the source point (which is restricted to one of the width-by-height faces)</p>
 
-        <div class="row">
-          <div class="col-md-4">
-                <p class="text-center">Width: <input type="text" id="widthAmount" value="5" readonly></p>
-                <div id="width"  style="margin:15px;"></div>
-          </div>
-          <div class="col-md-4">
-              <p class="text-center">Height: <input type="text" id="heightAmount" value="5" readonly></p>
-              <div id="height"  style="margin:15px;"></div>
-         </div>
-          <div class="col-md-4">
-              <p class="text-center">Length: <input type="text" id="lengthAmount" value="5" readonly></p>
-              <div id="length"  style="margin:15px;"></div>
-          </div>
+        <div id="sidebar">
+            <div id="description"><h1>Box Star Unfolding</h1>
+                <h4><a href="https://github.com/ddemas">Dani Demas</a> and Yu Xuan Hong</h4>
+                <p>This visualization shows the star unfolding for a rectangular prism. When this is folded into a box, the red
+                    points will meet at the the source point of the unfolding. The purple lines are the edges of the Voronoi
+                    diagram of the red points. These edges should also be the cut locus of the source point.
+                    <br><br>Click and drag any red point to change
+                    the location of the source point (which is restricted to one of the width-by-height faces)</p>
+
+                <table style="width:100%">
+                    <tr>
+                        <td valign="center">Width:</td>
+                        <td valign="center"><input type="text" id="widthAmount" value="0.5" style="width:40px;" readonly>
+                        </td>
+                        <td valign="center">
+                            <div id="width"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center">Height:</td>
+                        <td valign="center"><input type="text" id="heightAmount" value="0.5" style="width:40px;" readonly>
+                        </td>
+                        <td valign="center">
+                            <div id="height"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="center">Length:</td>
+                        <td valign="center"><input type="text" id="lengthAmount" value="0.5" style="width:40px;" readonly>
+                        </td>
+                        <td valign="center">
+                            <div id="length"></div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
         </div>
-      <div class="row">
-          <div class="col-md-6">
-              <p>Perimeter of star unfolding: <span id="perimeter"></span></p>
-          </div>
-          <div class="col-md-6">
-              <p>Fade region outside of unfolding <div id="fade" style="width:100px; margin:15px;"></div> </p>
-          </div>
-      </div>
 
-      </div>
-    </div>
 
-    <div class="container">
-      <canvas id="mainCanvas" height="700" style="border:1px solid #000000;"></canvas>
+          <!-- Square and on the side
+                x Take out perimeter calc
+                x Fixed opacity
+                Toggle voronoi
+                toggle interior colors
+                toggle star edges
+                name link
+                scale to canvas
+                gray dot with black border (fatter points)
+                Thicker boundary
+                 -->
+
+        <!--<div class="row">-->
+          <!--<div class="col-md-4">-->
+                <!--<p class="text-center">Width: <input type="text" id="widthAmount" value="5" readonly></p>-->
+                <!--<div id="width"  style="margin:15px;"></div>-->
+          <!--</div>-->
+          <!--<div class="col-md-4">-->
+              <!--<p class="text-center">Height: <input type="text" id="heightAmount" value="5" readonly></p>-->
+              <!--<div id="height"  style="margin:15px;"></div>-->
+         <!--</div>-->
+          <!--<div class="col-md-4">-->
+              <!--<p class="text-center">Length: <input type="text" id="lengthAmount" value="5" readonly></p>-->
+              <!--<div id="length"  style="margin:15px;"></div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--<div class="row">-->
+          <!--<div class="col-md-6">-->
+              <!--<p>Perimeter of star unfolding: <span id="perimeter"></span></p>-->
+          <!--</div>-->
+          <!--<div class="col-md-6">-->
+              <!--<p>Fade region outside of unfolding <div id="fade" style="width:100px; margin:15px;"></div> </p>-->
+          <!--</div>-->
+      <!--</div>-->
+
+        <div id="app-area">
+            <canvas id="mainCanvas"></canvas>
+        </div>
 
     </div> <!-- /container -->
 
-    <footer>This was created for MATH189O: Discrete and Computational Geometry, taught by Prof. Satyan Devadoss
-        at Harvey Mudd College in Spring 2016.</footer>
+    <!--<footer>This was created for MATH189O: Discrete and Computational Geometry, taught by Prof. Satyan Devadoss-->
+        <!--at Harvey Mudd College in Spring 2016.</footer>-->
 
         <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script> -->
         <!-- <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.js"><\/script>')</script> -->
