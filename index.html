@@ -12,7 +12,6 @@
         <link rel="icon" href="favicon.ico">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/bootstrap-switch.min.css" >
         <link href="css/jquery-ui.css" rel="stylesheet">
         <style>
             body {
@@ -25,10 +24,14 @@
                 border: none;
                 color: orangered;
             }
-            footer {
+            #bottom-info {
                 text-align: center;
                 font-family: Helvetica;
                 color: #777777;
+                position: absolute;
+                bottom:20px;
+                left:0;
+                font-size: 8pt;
             }
             span {
                 color: orangered;
@@ -48,11 +51,12 @@
         <div id="sidebar">
             <div id="description"><h1>Box Star Unfolding</h1>
                 <h4><a href="https://github.com/ddemas">Dani Demas</a> and Yu Xuan Hong</h4>
-                <p>This visualization shows the star unfolding for a rectangular prism. When this is folded into a box, the red
-                    points will meet at the the source point of the unfolding. The purple lines are the edges of the Voronoi
-                    diagram of the red points. These edges should also be the cut locus of the source point.
-                    <br><br>Click and drag any red point to change
-                    the location of the source point (which is restricted to one of the width-by-height faces)</p>
+                <p>This visualization shows the <a href="">star unfolding</a> for a rectangular prism for a given
+                    source point on the purple face. Cutting along the black lines and refolding into the prism will
+                    identify all eight copies of the source point. The red lines are the edges
+                    of the <a href="">Voronoi diagram</a> of the copies of the source point, leading to the
+                    <a href="">cut locus </a> and the <a href="">source unfolding</a> of the prism.
+                    The source points can be chosen and dragged, along with changing the ratios of the sides of the prism.</p>
 
                 <hr>
 
@@ -85,50 +89,16 @@
 
                 <br>
 
-                <input type="checkbox" id="voronoi-check" checked> Show Voronoi diagram <br>
-                <input type="checkbox" id="faces-check" checked> Show box faces <br>
-                <input type="checkbox" id="star-check" checked> Show star unfolding edges
+                <input type="checkbox" id="voronoi-check" checked> Show Voronoi Diagram <br>
+                <input type="checkbox" id="faces-check" checked> Show Box Faces <br>
+                <input type="checkbox" id="star-check" checked> Show Unfolding Edges <br>
+                <input type="checkbox" id="fade-check" checked> Show Faded Background
 
 
+                <div id="bottom-info">This visualization was inspired by the Discrete and Computational Geometry course
+                    at Harvey Mudd College, taught by <a href="http://satyandevadoss.org/">Professor Satyan Devadoss</a>.</div>
             </div>
-
         </div>
-
-
-          <!-- Square and on the side
-                x Take out perimeter calc
-                x Fixed opacity
-                Toggle voronoi
-                toggle interior colors
-                toggle star edges
-                name link
-                scale to canvas
-                gray dot with black border (fatter points)
-                Thicker boundary
-                 -->
-
-        <!--<div class="row">-->
-          <!--<div class="col-md-4">-->
-                <!--<p class="text-center">Width: <input type="text" id="widthAmount" value="5" readonly></p>-->
-                <!--<div id="width"  style="margin:15px;"></div>-->
-          <!--</div>-->
-          <!--<div class="col-md-4">-->
-              <!--<p class="text-center">Height: <input type="text" id="heightAmount" value="5" readonly></p>-->
-              <!--<div id="height"  style="margin:15px;"></div>-->
-         <!--</div>-->
-          <!--<div class="col-md-4">-->
-              <!--<p class="text-center">Length: <input type="text" id="lengthAmount" value="5" readonly></p>-->
-              <!--<div id="length"  style="margin:15px;"></div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--<div class="row">-->
-          <!--<div class="col-md-6">-->
-              <!--<p>Perimeter of star unfolding: <span id="perimeter"></span></p>-->
-          <!--</div>-->
-          <!--<div class="col-md-6">-->
-              <!--<p>Fade region outside of unfolding <div id="fade" style="width:100px; margin:15px;"></div> </p>-->
-          <!--</div>-->
-      <!--</div>-->
 
         <div id="app-area">
             <canvas id="mainCanvas"></canvas>
@@ -146,7 +116,6 @@
         <script src="js/vendor/rhill-voronoi-core.js"></script>
 
         <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="js/vendor/bootstrap-switch.min.js"></script>
 
         <script src="js/constants.js"></script>
         <script src="js/main.js"></script>

@@ -26,6 +26,11 @@
     padding: 20px 20px 40px 20px;
     background: #F7F8FC;
     height: auto;
+    min-height: 600px;
+}
+
+p {
+    text-align: justify;
 }
 
 #app-area {
@@ -65,9 +70,9 @@
 }
 
 hr {
-    color: #5f5f5f;
-    background-color: #5f5f5f;
-    border-color: #5f5f5f;
+    color: #777777;
+    background-color: #777777;
+    border-color: #777777;
     border-style: solid;
     border-width: 1px;
     width: 90%;

@@ -24,14 +24,14 @@ var centerPoints = starPoints(0,0);
 var mouseIsDown = false;
 var selectedPointInd = 0;
 
-var fade = 0.85;
+var fade = 0.5;
 
 var SCALE = 15;
 
 var voronoiDisp = true;
 var rectColorsDisp = true;
 var starEdgesDisp = true;
-
+var fadeDisp = true;
 
 resizeCanvas();
 setInterval(draw, 10);
@@ -160,7 +160,7 @@ function drawSymmetricPointsAndLines(relx, rely) {
         }
     }
 
-    if (starEdgesDisp) {
+    if (fadeDisp) {
         fadeOutside(points,
             [{x: midLeftVertexX, y: bottomVertexY},
                 {x: leftVertexX, y: bottomVertexY},
@@ -171,7 +171,9 @@ function drawSymmetricPointsAndLines(relx, rely) {
                 {x: rightVertexX, y: bottomVertexY},
                 {x: midRightVertexX, y: bottomVertexY}],
             fade);
+    }
 
+    if (starEdgesDisp) {
         // F
         drawStarPerimeter(points[0].x, points[0].y, midLeftVertexX, bottomVertexY);
         drawStarPerimeter(points[0].x, points[0].y, midRightVertexX, bottomVertexY);
@@ -253,7 +255,7 @@ function drawVoronoiLines(x1, y1, x2, y2) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
-    ctx.strokeStyle = BRIGHT_PINK;
+    ctx.strokeStyle = VORONOI_COLOR;
     ctx.lineWidth = 2;
     ctx.stroke();
     ctx.closePath();
