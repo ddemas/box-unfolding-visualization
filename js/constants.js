@@ -1,6 +1,6 @@
-var BG_GREEN = "#E1F5DA";
-var BG_RED = "#FAB6BF";
-var BG_BLUE = "#C0DDFA";
+var H_BY_W_COLOR = "#E1F5DA";
+var W_BY_L_COLOR = "#FAB6BF";
+var H_BY_L_COLOR = "#C0DDFA";
 var BG_PINK = "#FBD7FC";
 
 var BRIGHT_RED = "#FA0720";

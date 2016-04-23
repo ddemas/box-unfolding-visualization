@@ -40,6 +40,8 @@ function draw() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
     perimeter = 0;
 
+    updateCheckBoxes();
+
     rescale();
 
     if (rectColorsDisp) {
@@ -77,27 +79,11 @@ function rescale() {
 
     if(totalHeight > totalWidth * canvasHeightToWidthRatio) {
         newScale = canvas.height * 0.9 / totalHeight;
-        console.log("height > width");
     } else if (totalWidth * canvasHeightToWidthRatio >= totalHeight) {
         newScale = canvas.width * 0.9 / totalWidth;
-        console.log("width >= height");
     }
-    console.log("totalHeight: " + totalHeight);
-    console.log("totalWidth: " + totalWidth);
-    console.log("newScale: " + newScale);
-    console.log("oldScale: " + SCALE);
 
-    // if (totalWidth * newScale > 0.9*canvas.width) {
-    //     SCALE = canvas.width * 0.9 / totalWidth;
-    //     console.log("Oops! Too wide");
-    // } else if (totalHeight * newScale >= 0.9*canvas.height) {
-    //     SCALE = canvas.height * 0.9 / totalHeight;
-    //     console.log("Oops! Too tall");
-    // } else {
-    //     SCALE = newScale;
-    // }
     SCALE = newScale;
-    console.log("\n");
 
 }
 
@@ -106,40 +92,40 @@ function drawBgRectangles(w, h, l) {
     var scaledLength = l * SCALE;
     var scaledHeight = h * SCALE;
 
-    drawRectangle(center_x - scaledWidth/2,center_y - scaledHeight/2, scaledWidth, scaledHeight, BG_GREEN);
+    drawRectangle(center_x - scaledWidth/2,center_y - scaledHeight/2, scaledWidth, scaledHeight, H_BY_W_COLOR);
 
-    drawRectangle(center_x - scaledWidth/2,center_y - scaledHeight*3/2 - scaledLength, scaledWidth, scaledHeight, BG_GREEN);
-    drawRectangle(center_x - scaledWidth/2,center_y + scaledHeight/2 + scaledLength, scaledWidth, scaledHeight, BG_GREEN);
+    drawRectangle(center_x - scaledWidth/2,center_y - scaledHeight*3/2 - scaledLength, scaledWidth, scaledHeight, H_BY_W_COLOR);
+    drawRectangle(center_x - scaledWidth/2,center_y + scaledHeight/2 + scaledLength, scaledWidth, scaledHeight, H_BY_W_COLOR);
 
     drawRectangle(center_x - scaledWidth/2 - scaledLength - scaledHeight,
         center_y - scaledHeight/2 - scaledWidth,
-        scaledHeight, scaledWidth, BG_GREEN);
+        scaledHeight, scaledWidth, H_BY_W_COLOR);
     drawRectangle(center_x - scaledWidth/2 - scaledLength - scaledWidth,
         center_y - scaledHeight/2,
-        scaledWidth, scaledHeight, BG_GREEN);
+        scaledWidth, scaledHeight, H_BY_W_COLOR);
     drawRectangle(center_x - scaledWidth/2 - scaledLength - scaledHeight,
         center_y + scaledHeight/2,
-        scaledHeight, scaledWidth, BG_GREEN);
+        scaledHeight, scaledWidth, H_BY_W_COLOR);
 
     drawRectangle(center_x + scaledWidth/2 + scaledLength,
         center_y - scaledHeight/2 - scaledWidth,
-        scaledHeight, scaledWidth, BG_GREEN);
+        scaledHeight, scaledWidth, H_BY_W_COLOR);
     drawRectangle(center_x + scaledWidth/2 + scaledLength,
         center_y - scaledHeight/2,
-        scaledWidth, scaledHeight, BG_GREEN);
+        scaledWidth, scaledHeight, H_BY_W_COLOR);
     drawRectangle(center_x + scaledWidth/2 + scaledLength,
         center_y + scaledHeight/2,
-        scaledHeight, scaledWidth, BG_GREEN);
+        scaledHeight, scaledWidth, H_BY_W_COLOR);
 
-    drawRectangle(center_x + scaledWidth/2, center_y - scaledHeight/2, scaledLength, scaledHeight, BG_BLUE);
-    drawRectangle(center_x - scaledWidth/2 - scaledLength, center_y - scaledHeight/2, scaledLength, scaledHeight, BG_BLUE);
+    drawRectangle(center_x + scaledWidth/2, center_y - scaledHeight/2, scaledLength, scaledHeight, H_BY_L_COLOR);
+    drawRectangle(center_x - scaledWidth/2 - scaledLength, center_y - scaledHeight/2, scaledLength, scaledHeight, H_BY_L_COLOR);
 
-    drawRectangle(center_x - scaledWidth/2 - scaledLength, center_y - scaledHeight/2 - scaledWidth, scaledLength, scaledWidth, BG_RED);
-    drawRectangle(center_x - scaledWidth/2, center_y - scaledHeight/2 - scaledLength, scaledWidth, scaledLength, BG_RED);
-    drawRectangle(center_x + scaledWidth/2, center_y - scaledHeight/2 - scaledWidth, scaledLength, scaledWidth, BG_RED);
-    drawRectangle(center_x - scaledWidth/2 - scaledLength, center_y + scaledHeight/2, scaledLength, scaledWidth, BG_RED);
-    drawRectangle(center_x - scaledWidth/2, center_y + scaledHeight/2, scaledWidth, scaledLength, BG_RED);
-    drawRectangle(center_x + scaledWidth/2, center_y + scaledHeight/2, scaledLength, scaledWidth, BG_RED);
+    drawRectangle(center_x - scaledWidth/2 - scaledLength, center_y - scaledHeight/2 - scaledWidth, scaledLength, scaledWidth, W_BY_L_COLOR);
+    drawRectangle(center_x - scaledWidth/2, center_y - scaledHeight/2 - scaledLength, scaledWidth, scaledLength, W_BY_L_COLOR);
+    drawRectangle(center_x + scaledWidth/2, center_y - scaledHeight/2 - scaledWidth, scaledLength, scaledWidth, W_BY_L_COLOR);
+    drawRectangle(center_x - scaledWidth/2 - scaledLength, center_y + scaledHeight/2, scaledLength, scaledWidth, W_BY_L_COLOR);
+    drawRectangle(center_x - scaledWidth/2, center_y + scaledHeight/2, scaledWidth, scaledLength, W_BY_L_COLOR);
+    drawRectangle(center_x + scaledWidth/2, center_y + scaledHeight/2, scaledLength, scaledWidth, W_BY_L_COLOR);
 }
 
 function drawSymmetricPointsAndLines(relx, rely) {
@@ -359,6 +345,12 @@ function getMousePos(canvas, evt) {
         x: evt.clientX - rect.left,
         y: evt.clientY - rect.top
     };
+}
+
+function updateCheckBoxes() {
+    voronoiDisp = document.getElementById("voronoi-check").checked;
+    rectColorsDisp = document.getElementById("faces-check").checked;
+    starEdgesDisp = document.getElementById("star-check").checked;
 }
 
 //////////////////////////////////////////////////////////////

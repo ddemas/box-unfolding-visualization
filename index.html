@@ -12,6 +12,7 @@
         <link rel="icon" href="favicon.ico">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-switch.min.css" >
         <link href="css/jquery-ui.css" rel="stylesheet">
         <style>
             body {
@@ -53,6 +54,8 @@
                     <br><br>Click and drag any red point to change
                     the location of the source point (which is restricted to one of the width-by-height faces)</p>
 
+                <hr>
+
                 <table style="width:100%">
                     <tr>
                         <td valign="center">Width:</td>
@@ -79,6 +82,13 @@
                         </td>
                     </tr>
                 </table>
+
+                <br>
+
+                <input type="checkbox" id="voronoi-check" checked> Show Voronoi diagram <br>
+                <input type="checkbox" id="faces-check" checked> Show box faces <br>
+                <input type="checkbox" id="star-check" checked> Show star unfolding edges
+
 
             </div>
 
@@ -136,6 +146,7 @@
         <script src="js/vendor/rhill-voronoi-core.js"></script>
 
         <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/bootstrap-switch.min.js"></script>
 
         <script src="js/constants.js"></script>
         <script src="js/main.js"></script>
