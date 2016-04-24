@@ -11,7 +11,7 @@
     top:0;
     bottom:0;
     left:0;
-    width: 450px;
+    width: 480px;
 }
 
 #description {
@@ -26,18 +26,27 @@
     padding: 20px 20px 40px 20px;
     background: #F7F8FC;
     height: auto;
-    min-height: 600px;
+    min-height: 700px;
+}
+
+#check-boxes {
+    line-height: 180%;
 }
 
 p {
     text-align: justify;
+    margin: 15px 0 25px 0;
+}
+
+table {
+    height: 80px;
 }
 
 #app-area {
     /*display: flex;*/
     position:absolute;
     top:0;
-    left: 430px;
+    left: 460px;
     bottom:0;
     right:0;
     margin: 30px;
@@ -45,12 +54,7 @@ p {
 
 #mainCanvas {
     position:relative;
-    /*display:flex;*/
-    /*flex: 3;*/
-    min-width: 200px;
-    min-height: 200px;
-
-    border:1px solid #000000;
+    border:3px solid #3c3c3c;
 }
 
 #width {
@@ -78,8 +82,30 @@ hr {
     width: 90%;
 }
 
+#bottom-info {
+    text-align: center;
+    font-family: Helvetica;
+    color: #777777;
+    position: absolute;
+    bottom:20px;
+    left:0;
+    font-size: 8pt;
+    margin: 0 10px 0 10px;
+}
 
+body {
+    padding-top: 0px;
+    padding-bottom: 20px;
+}
 
+input[readonly] {
+    background-color: transparent;
+    border: none;
+    color: orangered;
+}
+span {
+    color: orangered;
+}
 
 
 

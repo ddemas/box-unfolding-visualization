@@ -13,30 +13,6 @@
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link href="css/jquery-ui.css" rel="stylesheet">
-        <style>
-            body {
-                padding-top: 0px;
-                padding-bottom: 20px;
-            }
-
-            input[readonly] {
-                background-color: transparent;
-                border: none;
-                color: orangered;
-            }
-            #bottom-info {
-                text-align: center;
-                font-family: Helvetica;
-                color: #777777;
-                position: absolute;
-                bottom:20px;
-                left:0;
-                font-size: 8pt;
-            }
-            span {
-                color: orangered;
-            }
-        </style>
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="css/main.css">
 
@@ -54,12 +30,16 @@
                 <p>This visualization shows the <a href="">star unfolding</a> for a rectangular prism for a given
                     source point on the purple face. Cutting along the black lines and refolding into the prism will
                     identify all eight copies of the source point. The red lines are the edges
-                    of the <a href="">Voronoi diagram</a> of the copies of the source point, leading to the
-                    <a href="">cut locus</a> and the <a href="">source unfolding</a> of the prism.
-                    The source points can be chosen and dragged, along with changing the ratios of the sides of the prism.</p>
+                    of the <a href="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</a> of the copies
+                    of the source point, leading to the
+                    <a href="https://en.wikipedia.org/wiki/Cut_locus_(Riemannian_manifold)">cut locus</a> and the
+                    <a href="">source unfolding</a> of the prism. <br><br>
+                    Use the sliders below to change the relative dimensions of the prism and click and drag the
+                    source point to change its position on the purple face.</p>
 
                 <hr>
 
+                <p>
                 <table style="width:100%">
                     <tr>
                         <td valign="center">Width:</td>
@@ -86,14 +66,18 @@
                         </td>
                     </tr>
                 </table>
+                </p>
 
-                <br>
+                <hr>
 
-                <input type="checkbox" id="voronoi-check" checked> Show Voronoi Diagram <br>
-                <input type="checkbox" id="faces-check" checked> Show Box Faces <br>
-                <input type="checkbox" id="star-check" checked> Show Unfolding Edges <br>
-                <input type="checkbox" id="fade-check" checked> Show Faded Background
-
+                <p>
+                    <div id="check-boxes">
+                    <input type="checkbox" id="voronoi-check" checked> Show Voronoi Diagram <br>
+                    <input type="checkbox" id="faces-check" checked> Show Box Faces <br>
+                    <input type="checkbox" id="star-check" checked> Show Unfolding Edges <br>
+                    <input type="checkbox" id="fade-check" checked> Show Faded Background
+                    </div>
+                </p>
 
                 <div id="bottom-info">This visualization was inspired by the Discrete and Computational Geometry course
                     at Harvey Mudd College, taught by <a href="http://satyandevadoss.org/">Professor Satyan Devadoss</a>.</div>

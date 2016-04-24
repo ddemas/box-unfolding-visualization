@@ -5,6 +5,7 @@ var BG_PINK = "#FBD7FC";
 
 var BRIGHT_RED = "#FA0720";
 var VORONOI_COLOR = "#FF293E";
+//var VORONOI_COLOR = "#002FFF";
 
 var BLACK = "#000000";
 var WHITE = "#FFFFFF";

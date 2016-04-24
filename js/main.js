@@ -1,5 +1,4 @@
 var canvas = document.getElementById("mainCanvas");
-canvas.width = $(window).width() - 250;
 var ctx = canvas.getContext("2d");
 
 canvas.onmousedown = clickMouse;
@@ -10,8 +9,8 @@ var height = 0.5;
 var width = 0.5;
 var length = 0.5;
 
-var center_x = canvas.width / 2;
-var center_y = canvas.height / 2;
+var center_x;
+var center_y;
 
 var perimeter = 0;
 
@@ -66,9 +65,9 @@ function draw() {
 }
 
 function resizeCanvas() {
-    canvas.width = $(window).width() - 500;
+    canvas.width = $(window).width() - 530;
     center_x = canvas.width / 2;
-    canvas.height = $(window).height() - 50;
+    canvas.height = $(window).height() - 65;
     center_y = canvas.height / 2;
 }
 
@@ -166,7 +165,7 @@ function drawSymmetricPointsAndLines(relx, rely) {
         }
     }
 
-    if (fadeDisp) {
+    if (fadeDisp && starEdgesDisp) {
         fadeOutside(points,
             [{x: midLeftVertexX, y: bottomVertexY},
                 {x: leftVertexX, y: bottomVertexY},
@@ -177,6 +176,8 @@ function drawSymmetricPointsAndLines(relx, rely) {
                 {x: rightVertexX, y: bottomVertexY},
                 {x: midRightVertexX, y: bottomVertexY}],
             fade);
+    } else if (fadeDisp) {
+        fadeEverything(fade);
     }
 
     if (starEdgesDisp) {
@@ -291,6 +292,18 @@ function fadeOutside(convexVertices, concaveVertices, opacity) {
         ctx.lineTo(concaveVertices[i].x, concaveVertices[i].y);
         ctx.lineTo(convexVertices[i].x, convexVertices[i].y);
     }
+    ctx.closePath();
+
+    ctx.fillStyle = "rgba(255,255,255," + opacity + ")";
+    ctx.fill();
+}
+
+function fadeEverything(opacity) {
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(canvas.width, 0);
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.lineTo(0, canvas.height);
     ctx.closePath();
 
     ctx.fillStyle = "rgba(255,255,255," + opacity + ")";
