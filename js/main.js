@@ -24,6 +24,8 @@ var centerPoints = starPoints(0,0);
 var mouseIsDown = false;
 var selectedPointInd = 0;
 
+var voronoiDiagram = null;
+
 var fade = 0.5;
 
 var SCALE = 15;
@@ -151,11 +153,15 @@ function drawSymmetricPointsAndLines(relx, rely) {
 
     var voronoi = new Voronoi();
     var bbox = {xl: -50, xr: canvas.width + 50, yt: -50, yb: canvas.height + 50};
-    var diagram = voronoi.compute(points, bbox);
+    try {
+        voronoiDiagram = voronoi.compute(points, bbox);
+    } catch(Exception) {
+        console.log("oops");
+    }
 
     if (voronoiDisp) {
-        for (var i = 0; i < diagram.edges.length; i++) {
-            var edge = diagram.edges[i];
+        for (var i = 0; i < voronoiDiagram.edges.length; i++) {
+            var edge = voronoiDiagram.edges[i];
             drawVoronoiLines(edge.va.x, edge.va.y, edge.vb.x, edge.vb.y);
         }
     }
@@ -293,7 +299,6 @@ function fadeOutside(convexVertices, concaveVertices, opacity) {
 
 function clickMouse(e) {
     var mousePos = getMousePos(canvas, e);
-    console.log("x: " + mousePos.x + ", y: " + mousePos.y);
     for (var i = 0; i < points.length; i++){
         if ((mousePos.x >= points[i].x - POINT_RADIUS && mousePos.x <= points[i].x + POINT_RADIUS) &&
             (mousePos.y >= points[i].y - POINT_RADIUS && mousePos.y <= points[i].y + POINT_RADIUS)) {
@@ -353,6 +358,7 @@ function updateCheckBoxes() {
     voronoiDisp = document.getElementById("voronoi-check").checked;
     rectColorsDisp = document.getElementById("faces-check").checked;
     starEdgesDisp = document.getElementById("star-check").checked;
+    fadeDisp = document.getElementById("fade-check").checked;
 }
 
 //////////////////////////////////////////////////////////////
