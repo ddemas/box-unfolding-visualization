@@ -11,7 +11,7 @@
     top:0;
     bottom:0;
     left:0;
-    width: 480px;
+    width: 500px;
 }
 
 #description {
@@ -26,7 +26,8 @@
     padding: 20px 20px 40px 20px;
     background: #F7F8FC;
     height: auto;
-    min-height: 625px;
+    min-height: 670px;
+    line-height: 19px;
 }
 
 #check-boxes {
@@ -35,7 +36,7 @@
 
 p {
     text-align: justify;
-    margin: 15px 0 25px 0;
+    margin: 15px 0 15px 0;
 }
 
 table {
@@ -46,7 +47,7 @@ table {
     /*display: flex;*/
     position:absolute;
     top:0;
-    left: 460px;
+    left: 480px;
     bottom:0;
     right:0;
     margin: 30px;
