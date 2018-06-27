@@ -16,7 +16,6 @@
 
 #description {
     position: absolute;
-    display: block;
     top:0;
     bottom:0;
     left:0;
@@ -35,7 +34,7 @@
 }
 
 p {
-    text-align: justify;
+    text-align: left;
     margin: 15px 0 15px 0;
 }
 
